@@ -3,10 +3,10 @@
     <div class="setup-panel">
       <header class="setup-copy">
         <div class="brand-mark">
-          <img :src="movoLogo" alt="MOVO" />
+          <img :src="movoLogo" alt="UTECH" />
         </div>
         <div>
-          <div class="eyebrow">MOVO INITIAL SETUP</div>
+          <div class="eyebrow">UTECH INITIAL SETUP</div>
           <h1>{{ setupCompleted ? t('legacy.system_ready') : t('legacy.set_up_enterprise_service') }}</h1>
           <p>{{ heroDescription }}</p>
         </div>
@@ -89,7 +89,6 @@ import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import axios from 'axios';
-import movoLogo from '@/assets/images/movo-logo.png';
 import {
   fetchSetupModelProviders,
   fetchSetupSearchProviders,
@@ -118,6 +117,8 @@ import { t } from '@/composables/i18n';
 import { localizedServerText } from '@/utils/serverText';
 import { getBrowserTimezone } from '@/composables/adminTimezone';
 import { useSetupStore } from '@/stores/setup';
+
+const movoLogo = `${import.meta.env.BASE_URL}logo.png`;
 
 const router = useRouter();
 const message = useMessage();

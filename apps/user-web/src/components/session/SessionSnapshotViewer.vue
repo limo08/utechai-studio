@@ -22,7 +22,7 @@ onMounted(async () => {
   <div class="fixed inset-0 z-[100] overflow-y-auto bg-white text-slate-900">
     <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-3 backdrop-blur">
       <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
-        <span class="shrink-0 text-lg font-semibold tracking-wide text-slate-600">MOVO</span>
+        <span class="shrink-0 text-lg font-semibold tracking-wide text-slate-600">UTECH</span>
         <div class="min-w-0 text-center"><strong class="block truncate text-sm">{{ snapshot?.title || t('session.snapshot.title') }}</strong><p class="text-xs text-slate-500">{{ t('session.snapshot.readOnly') }}</p></div>
         <n-button class="shrink-0" round @click="emit('close')">{{ t('ui.close') }}</n-button>
       </div>

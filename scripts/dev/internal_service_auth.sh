@@ -60,8 +60,9 @@ movo_prepare_internal_service_auth() {
     export DOCUMENT_PROCESSING_SERVICE_TOKEN="$document_token"
 
     # Model Center secrets are encrypted by admin-api with its JWT secret and
-    # decrypted by both the document API and Celery worker. They must receive
-    # the exact same stable value or every embedding/rerank key is unreadable.
+    # decrypted by chat-api, the document API, and the Celery worker. They must
+    # receive the exact same stable value or stored provider keys are
+    # unreadable.
     local admin_jwt_secret="${ASKAI_ADMIN_JWT_SECRET:-${MOVO_DOC_PROCESSING_ADMIN_JWT_SECRET:-}}"
     if [ -z "$admin_jwt_secret" ] && [ -n "$root_dir" ]; then
         admin_jwt_secret="$(_movo_read_env_value ASKAI_ADMIN_JWT_SECRET "$root_dir/services/admin-api/.env")"
@@ -97,4 +98,9 @@ movo_prepare_internal_service_auth() {
     fi
     export ASKAI_ADMIN_JWT_SECRET="$admin_jwt_secret"
     export MOVO_DOC_PROCESSING_ADMIN_JWT_SECRET="$admin_jwt_secret"
+    # chat-api prefers MODEL_CONFIG_SECRET over ASKAI_ADMIN_JWT_SECRET when it
+    # decrypts Model Center credentials. Docker bootstrap deliberately sets
+    # both to the same value; mirror that in source mode so a stale value in
+    # the shell cannot make chat-api disagree with admin-api.
+    export MODEL_CONFIG_SECRET="$admin_jwt_secret"
 }

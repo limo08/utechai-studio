@@ -478,10 +478,10 @@ const sidebarBindings = useAppSidebarBindings({
   <div
     v-if="capabilities.isDesktop && desktopServerState === 'checking'"
     class="flex h-screen items-center justify-center bg-slate-50"
-    aria-label="Loading MOVO"
+    aria-label="Loading UTECH"
   >
     <div class="flex h-14 w-16 items-center justify-center rounded-2xl bg-white shadow-lg" aria-hidden="true">
-      <img src="/movo-logo.png" alt="" class="h-10 w-12 object-contain" />
+      <img src="/logo.png" alt="" class="h-10 w-12 object-contain" />
     </div>
   </div>
   <DesktopServerSetup

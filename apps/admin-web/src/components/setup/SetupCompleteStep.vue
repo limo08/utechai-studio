@@ -40,7 +40,7 @@ const items = computed(() => [
 
 function downloadConnectionFile() {
   const lines = [
-    'MOVO SELF-HOSTED CONNECTION',
+    'UTECH SELF-HOSTED CONNECTION',
     '===========================',
     `Organization: ${props.orgName}`,
     `Tenant ID: ${props.mainId}`,

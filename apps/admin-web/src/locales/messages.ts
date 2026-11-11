@@ -193,7 +193,7 @@ export const messages = {
 
   // Layout (BasicLayout.vue).
   'legacy.enter_admin': { 'zh-CN': '进入管理后台', 'en-US': 'Enter Admin' },
-  'legacy.movo_agent_console': { 'zh-CN': 'MOVO 智能体控制台', 'en-US': 'MOVO Agent Console' },
+  'legacy.movo_agent_console': { 'zh-CN': 'UTECH 智能体控制台', 'en-US': 'UTECH Agent Console' },
   'legacy.entering_admin': { 'zh-CN': '正在进入后台...', 'en-US': 'Entering Admin...' },
   'legacy.back_to_skills': { 'zh-CN': '返回 Skill 列表', 'en-US': 'Back to Skills' },
   'legacy.back': { 'zh-CN': '返回', 'en-US': 'Back' },
@@ -802,7 +802,7 @@ export const messages = {
 
   // Invitation acceptance (InviteAcceptPage.vue).
   'legacy.organization_invitation': { 'zh-CN': '企业邀请', 'en-US': 'Organization Invitation' },
-  'legacy.join_s_movo_workspace': { 'zh-CN': '加入 {org} 的 MOVO 工作空间', 'en-US': 'Join {org}\'s MOVO Workspace' },
+  'legacy.join_s_movo_workspace': { 'zh-CN': '加入 {org} 的 UTECH 工作空间', 'en-US': 'Join {org}\'s UTECH Workspace' },
   'legacy.activate_your_account_to_sign_in_and_start_using': { 'zh-CN': '完成账号激活后，即可登录 MOVO 前台系统开始使用。', 'en-US': 'Activate your account to sign in and start using MOVO.' },
   'legacy.invitation_valid_until': { 'zh-CN': '邀请有效期至：{time}', 'en-US': 'Invitation valid until: {time}' },
   'legacy.invitation_link_is_invalid': { 'zh-CN': '邀请链接不可用', 'en-US': 'Invitation link is invalid' },

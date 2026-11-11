@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="apps/user-web/public/movo-logo.png" alt="MOVO" width="180">
+  <img src="apps/user-web/public/logo.png" alt="UTECHS" width="180">
 </p>
 
 <h1 align="center">MOVO 社区版</h1>

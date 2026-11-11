@@ -150,7 +150,7 @@ const editingSessionTitle = defineModel<string>('editingTitle', { required: true
             <button v-if="editingSessionId !== session.id" type="button" class="shrink-0 text-gray-400 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:text-blue-600" :aria-label="t('app.pin')" :title="t('app.pin')" @click.stop="toggleSessionPin(session.id)"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6Z"/><path d="M12 14v7"/></svg></button>
             <button
               type="button"
-              class="shrink-0 overflow-hidden rounded-md p-0 text-gray-400 opacity-0 transition-all hover:bg-gray-200 hover:text-red-500 group-hover:w-6 group-hover:p-1 group-hover:opacity-100"
+              class="h-6 shrink-0 overflow-hidden rounded-md p-0 text-gray-400 opacity-0 transition-all hover:bg-gray-200 hover:text-red-500 group-hover:w-6 group-hover:p-1 group-hover:opacity-100"
               :class="deletingSessionId === session.id ? 'w-6 !p-1 !opacity-100 text-red-500' : 'w-0'"
               :disabled="deletingSessionId === session.id"
               @click.stop="handleDeleteSession(session.id)"

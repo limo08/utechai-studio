@@ -11,7 +11,7 @@ export const deploymentStatusMessages = {
   'deployment.selectAll': { 'zh-CN': '全选文本', 'en-US': 'Select all' },
   'deployment.loadFailed': { 'zh-CN': '当前环境未提供容器状态数据。若为本地非镜像启动，这是预期情况；镜像部署时请检查部署观察服务。', 'en-US': 'Container status is unavailable. This is expected in local non-container development; check the deployment observer in a container deployment.' },
   'deployment.emptyTitle': { 'zh-CN': '尚无容器状态', 'en-US': 'No container status yet' },
-  'deployment.emptyDescription': { 'zh-CN': '通过镜像启动 MOVo 后，这里会显示实际镜像 ID、健康检查和重启次数。', 'en-US': 'Start MOVo with containers to see actual image IDs, health checks, and restart counts here.' },
+  'deployment.emptyDescription': { 'zh-CN': '通过镜像启动 UTECH 后，这里会显示实际镜像 ID、健康检查和重启次数。', 'en-US': 'Start MOVo with containers to see actual image IDs, health checks, and restart counts here.' },
   'deployment.loading': { 'zh-CN': '正在读取运行状态…', 'en-US': 'Loading runtime status…' },
   'deployment.checkedAt': { 'zh-CN': '检查时间', 'en-US': 'Checked at' },
   'deployment.upgradedAt': { 'zh-CN': '最近成功升级', 'en-US': 'Latest successful upgrade' },

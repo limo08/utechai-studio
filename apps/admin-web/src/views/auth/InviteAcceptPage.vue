@@ -61,9 +61,9 @@
       </n-card>
     </div>
 
-    <footer class="invite-brand-footer" aria-label="MOVO Brand">
-      <img class="invite-brand-logo" :src="movoLogo" alt="MOVO" />
-      <span class="brand-text">Powered by MOVO</span>
+    <footer class="invite-brand-footer" aria-label="UTECH Brand">
+      <img class="invite-brand-logo" :src="movoLogo" alt="UTECH" />
+      <span class="brand-text">Powered by UTECH</span>
     </footer>
   </div>
 </template>
@@ -74,7 +74,8 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { acceptInviteLink, fetchInviteLinkDetail, type InviteLinkDetail } from '@/api/directory';
 import { t } from '@/composables/i18n';
-import movoLogo from '@/assets/images/movo-logo.png';
+
+const movoLogo = `${import.meta.env.BASE_URL}logo.png`;
 
 const route = useRoute();
 const state = ref<'loading' | 'ready' | 'success' | 'error'>('loading');

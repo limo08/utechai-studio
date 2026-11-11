@@ -22,9 +22,9 @@ const emit = defineEmits<{
 
 <template>
   <aside class="app-sidebar w-[260px] bg-[#f8fafc] flex flex-col border-r border-gray-200 shadow-[1px_0_0_rgba(0,0,0,0.02)]">
-    <div v-if="!desktop" class="flex h-14 items-center gap-2.5 px-5" aria-label="MOVO">
-      <img src="/movo-logo.png" alt="" class="h-8 w-10 object-contain" />
-      <span class="text-[15px] font-extrabold tracking-[0.14em] text-slate-800">MOVO</span>
+    <div v-if="!desktop" class="flex h-14 items-center gap-2.5 px-5" aria-label="UTECH">
+      <img src="/logo.png" alt="" class="h-8 w-10 object-contain" />
+      <span class="text-[15px] font-extrabold tracking-[0.14em] text-slate-800">UTECH</span>
     </div>
     <div class="sidebar-quick-actions flex items-center gap-1.5 px-3 pb-2 pt-2">
       <button

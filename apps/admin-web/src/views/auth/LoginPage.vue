@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-panel">
       <div class="login-copy">
-        <img class="login-logo" :src="movoLogo" alt="MOVO" />
+        <img class="login-logo" :src="movoLogo" alt="UTECH" />
         <h1>{{ t('legacy.movo_agent_console') }}</h1>
         <p>
           {{ t('legacy.manage_organizations_models_and_process_configurations_to_ensure_stable') }}
@@ -67,7 +67,8 @@ import { useMessage } from 'naive-ui';
 import { login, selectTenantLogin, type TenantCandidate } from '@/api/auth';
 import { useAuthStore } from '@/stores/auth';
 import { t } from '@/composables/i18n';
-import movoLogo from '@/assets/images/movo-logo.png';
+
+const movoLogo = `${import.meta.env.BASE_URL}logo.png`;
 
 const router = useRouter();
 const message = useMessage();

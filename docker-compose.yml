@@ -73,11 +73,17 @@ services:
         echo "MOVO deployment secrets are ready."
         echo "After services become healthy, open http://localhost:$${MOVO_PORT:-3000}/admin/setup"
 
+  
+
+  
+
   mongo:
     image: ${MOVO_MONGO_IMAGE:-mongo:6.0.20}
     restart: unless-stopped
     volumes:
       - mongo-data:/data/db
+    ports:
+      - "27017:27017"
     networks:
       - backend
     healthcheck:
@@ -93,6 +99,8 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis-data:/data
+    ports:
+      - "6379:6379"
     networks:
       - backend
     healthcheck:
@@ -113,6 +121,8 @@ services:
       DISABLE_TELEMETRY: "true"
     volumes:
       - weaviate-data:/var/lib/weaviate
+    ports:
+      - "8080:8080"
     networks:
       - backend
     healthcheck:
@@ -465,7 +475,8 @@ services:
 networks:
   public:
   backend:
-    internal: true
+    driver: bridge
+    #internal: true
 
 volumes:
   # Community installations use their own physical volumes. Override the

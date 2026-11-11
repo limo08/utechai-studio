@@ -63,7 +63,11 @@ export function useUserQuestions(options: Options) {
 
   function schedule() {
     if (timer) clearTimeout(timer)
+    timer = undefined
     if (!options.active()) return
+    // Nothing can become pending while the pane is idle, so stop polling
+    // instead of hitting the questions endpoint forever in the background.
+    if (!options.running() && pending.value.length === 0) return
     const generation = epoch
     timer = setTimeout(async () => {
       await refresh()

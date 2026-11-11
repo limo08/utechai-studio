@@ -77,7 +77,10 @@ def decrypt_secret(value: str) -> str:
     nonce, mac, cipher = packed[:16], packed[16:48], packed[48:]
     expected = hmac.new(_secret_key(), nonce + cipher, hashlib.sha256).digest()
     if not hmac.compare_digest(mac, expected):
-        raise ModelConfigError("模型 API Key 解密失败，请确认 backend 与 admin 使用相同的 ASKAI_ADMIN_JWT_SECRET")
+        raise ModelConfigError(
+            "模型 API Key 解密失败：请确认 backend 与 admin 使用相同的 ASKAI_ADMIN_JWT_SECRET，"
+            "并在管理端重新保存该模型的 API Key（更换过密钥后旧密文无法解密）"
+        )
     stream = _keystream(nonce, len(cipher))
     payload = bytes(left ^ right for left, right in zip(cipher, stream))
     return payload.decode("utf-8")

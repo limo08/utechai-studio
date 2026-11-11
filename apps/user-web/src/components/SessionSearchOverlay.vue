@@ -152,7 +152,7 @@ const emit = defineEmits<{
                     ></span>
                     <button
                       type="button"
-                      class="shrink-0 overflow-hidden rounded-md p-0 text-gray-400 opacity-0 transition-all hover:bg-gray-100 hover:text-red-500 group-hover:w-6 group-hover:p-1 group-hover:opacity-100"
+                      class="h-6 shrink-0 overflow-hidden rounded-md p-0 text-gray-400 opacity-0 transition-all hover:bg-gray-100 hover:text-red-500 group-hover:w-6 group-hover:p-1 group-hover:opacity-100"
                       :class="deletingSessionId === session.id ? 'w-6 !p-1 !opacity-100 text-red-500' : 'w-0'"
                       :disabled="deletingSessionId === session.id"
                       @click.stop="emit('delete-session', session.id)"

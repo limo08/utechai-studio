@@ -723,7 +723,7 @@ export const messages = {
   'chat.unauthorized': { zh: '鉴权失败，请重新登录后重试。', en: 'Authentication failed. Please sign in again.' },
 
   // Login Modal
-  'login.title': { zh: '登录 MOVO', en: 'Sign in to MOVO' },
+  'login.title': { zh: '登录 UTECH', en: 'Sign in to UTECH' },
   'login.password_desc': { zh: '使用企业管理员分配的员工账号登录。', en: 'Use the employee account provided by your enterprise administrator.' },
   'login.method_label': { zh: '登录方式', en: 'Sign-in method' },
   'login.method.password': { zh: '账号密码', en: 'Username & Password' },

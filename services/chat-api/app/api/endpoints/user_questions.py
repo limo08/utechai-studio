@@ -35,7 +35,9 @@ class QuestionReply(BaseModel):
     answers: list[QuestionAnswer] = Field(min_length=1)
 
 
-async def _owning_binding(conversation_id: str, authorization: str | None) -> dict[str, Any]:
+async def _owning_binding(
+    conversation_id: str, authorization: str | None, *, require_run: bool = True
+) -> dict[str, Any] | None:
     resolved = await resolve_session_user(authorization)
     tenant_id = resolve_main_id(resolved["main_id"])
     user_id = str(resolved["user"]["_id"])
@@ -50,6 +52,11 @@ async def _owning_binding(conversation_id: str, authorization: str | None) -> di
     except CancelNotAllowedError as exc:
         raise HTTPException(status_code=403, detail="question_owner_required") from exc
     if not conversation.get("active_run"):
+        # Polling for questions while the conversation is idle is not an
+        # error: there is simply nothing pending. Returning 404 here makes
+        # every poll log a failed request in the browser.
+        if not require_run:
+            return None
         raise HTTPException(status_code=404, detail="question_run_not_found")
     try:
         assert_run_initiator(conversation, conversation_id=conversation_id, user_id=user_id)
@@ -57,6 +64,8 @@ async def _owning_binding(conversation_id: str, authorization: str | None) -> di
         raise HTTPException(status_code=403, detail="question_owner_required") from exc
     binding = await KernelBindingRepository(db).current(conversation_id, tenant_id=tenant_id, user_id=user_id)
     if binding is None or binding.get("execution_location") != "server":
+        if not require_run:
+            return None
         raise HTTPException(status_code=404, detail="question_session_not_found")
     return {
         **binding, "_tenant_id": tenant_id, "_user_id": user_id,
@@ -76,7 +85,9 @@ async def pending_questions(
     conversation_id: str,
     authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    binding = await _owning_binding(conversation_id, authorization)
+    binding = await _owning_binding(conversation_id, authorization, require_run=False)
+    if binding is None:
+        return {"questions": []}
     try:
         return await dsh_runtime_application.require_transport().request("GET", _question_path(binding))
     except DshRuntimeError as exc:
@@ -91,6 +102,8 @@ async def answer_question(
     authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
     binding = await _owning_binding(conversation_id, authorization)
+    if binding is None:  # require_run=True: absent runs raise above, never return None
+        raise HTTPException(status_code=404, detail="question_run_not_found")
     if not question_id or "/" in question_id or len(question_id) > 256:
         raise HTTPException(status_code=400, detail="invalid_question_id")
     transport = dsh_runtime_application.require_transport()

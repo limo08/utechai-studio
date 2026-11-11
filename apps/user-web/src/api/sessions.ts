@@ -127,6 +127,10 @@ const client = axios.create({
   timeout: 120000,
 })
 
+/**
+ * 增加鉴权表头
+ * @param authToken
+ */
 function authHeaders(authToken?: string | null) {
   return authToken ? { Authorization: `Bearer ${authToken}` } : {}
 }
@@ -161,6 +165,13 @@ export async function listSessions(userId: string, mainId?: string, authToken?: 
   return response.data?.data || []
 }
 
+/**
+ * 分页显示会话列表
+ * @param userId
+ * @param mainId
+ * @param options
+ * @param authToken
+ */
 export async function listSessionsPaged(
   userId: string,
   mainId?: string,
@@ -190,6 +201,15 @@ export async function listSessionsPaged(
   }
 }
 
+/**
+ * 搜索用户会话
+ *
+ * @param userId
+ * @param mainId
+ * @param queryText
+ * @param options
+ * @param authToken
+ */
 export async function searchSessions(
   userId: string,
   mainId: string | undefined,

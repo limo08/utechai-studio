@@ -76,8 +76,8 @@ const emit = defineEmits<{
   >
     <div class="desktop-window-chrome__sidebar">
       <span class="desktop-window-chrome__brand">
-        <img src="/movo-logo.png" :alt="windowsTitleBar && (navigationWidth || 260) <= 64 ? 'MOVO' : ''" />
-        <span>MOVO</span>
+        <img src="/logo.png" :alt="windowsTitleBar && (navigationWidth || 260) <= 64 ? 'UTECH' : ''" />
+        <span>UTECH</span>
       </span>
       <button
         v-if="!windowsTitleBar && secondaryNavigationAvailable && !sidebarCollapsed"
@@ -96,9 +96,9 @@ const emit = defineEmits<{
     </div>
     <div class="desktop-window-chrome__content">
       <div class="desktop-window-chrome__context">
-        <span v-if="!windowsTitleBar && sidebarCollapsed" class="desktop-window-chrome__brand desktop-window-chrome__collapsed-brand" aria-label="MOVO">
-          <img src="/movo-logo.png" alt="" />
-          <span>MOVO</span>
+        <span v-if="!windowsTitleBar && sidebarCollapsed" class="desktop-window-chrome__brand desktop-window-chrome__collapsed-brand" aria-label="UTECH">
+          <img src="/logo.png" alt="" />
+          <span>UTECH</span>
         </span>
         <button
           v-if="!windowsTitleBar && secondaryNavigationAvailable && sidebarCollapsed"

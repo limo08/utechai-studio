@@ -86,6 +86,29 @@ def test_completed_run_has_no_answerable_question(monkeypatch):
     monkeypatch.setattr(endpoint, "member_conversation", conversation)
     monkeypatch.setattr(endpoint, "get_db", lambda: object())
     monkeypatch.setattr(endpoint, "SessionParticipantsRepository", lambda _db: object())
-    with pytest.raises(HTTPException) as error:
-        asyncio.run(endpoint.pending_questions(str(ObjectId()), "Bearer token"))
-    assert error.value.status_code == 404
+    # An idle conversation is a normal poll, not an error: empty, not 404.
+    assert asyncio.run(endpoint.pending_questions(str(ObjectId()), "Bearer token")) == {"questions": []}
+
+
+def test_non_server_binding_has_no_pending_question(monkeypatch):
+    user_id = str(ObjectId())
+
+    async def identity(_authorization):
+        return {"main_id": "tenant", "user": {"_id": ObjectId(user_id)}}
+
+    async def conversation(_db, _participants, _conversation_id, **_kwargs):
+        return {"active_run": {"initiator_user_id": user_id}}
+
+    class Bindings:
+        def __init__(self, _db):
+            pass
+
+        async def current(self, *_args, **_kwargs):
+            return {"execution_location": "desktop"}
+
+    monkeypatch.setattr(endpoint, "resolve_session_user", identity)
+    monkeypatch.setattr(endpoint, "member_conversation", conversation)
+    monkeypatch.setattr(endpoint, "get_db", lambda: object())
+    monkeypatch.setattr(endpoint, "SessionParticipantsRepository", lambda _db: object())
+    monkeypatch.setattr(endpoint, "KernelBindingRepository", Bindings)
+    assert asyncio.run(endpoint.pending_questions(str(ObjectId()), "Bearer token")) == {"questions": []}

@@ -11,8 +11,8 @@
       style="backdrop-filter: blur(16px);"
     >
       <div class="brand-block" :class="{ compact: collapsed }">
-        <img class="brand-logo" :src="movoLogo" alt="MOVO" />
-        <span v-if="!collapsed" class="brand-name">MOVO</span>
+        <img class="brand-logo" :src="movoLogo" alt="UTECH" />
+        <span v-if="!collapsed" class="brand-name">UTECH</span>
       </div>
       <n-menu
         :collapsed="collapsed"
@@ -144,11 +144,12 @@ import { useRoute, useRouter } from 'vue-router';
 import { appRoutes } from '@/router/routes';
 import { useMenuOptions } from '@/composables/useMenuOptions';
 import { useAuthStore } from '@/stores/auth';
-import movoLogo from '@/assets/images/movo-logo.png';
 import { resolveAdminAssetUrlWithVersion } from '@/composables/adminAsset';
 import { isLocale, useLocale, t, translateSourceText } from '@/composables/i18n';
 import { adminLanguageChangedMessages, adminLanguageNames } from '@/locales/adminRegionOptions';
 import { displayAdminName, isMobileLike } from '@/composables/privacy';
+
+const movoLogo = `${import.meta.env.BASE_URL}logo.png`;
 
 const router = useRouter();
 const route = useRoute();
@@ -177,7 +178,7 @@ const currentRouteTitle = computed(() => {
   if (typeof metaTitle === 'string' && metaTitle) {
     return translateSourceText(metaTitle);
   }
-  return routeTitleMap.get(route.path) ? translateSourceText(routeTitleMap.get(route.path)!) : 'MOVO Admin';
+  return routeTitleMap.get(route.path) ? translateSourceText(routeTitleMap.get(route.path)!) : 'UTECH Admin';
 });
 const isToolEditPage = computed(() => route.path === '/tools/new' || route.name === 'ToolEdit');
 const isSkillConfigPage = computed(() => route.name === 'SkillConfig');

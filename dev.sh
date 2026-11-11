@@ -14,8 +14,32 @@ ADMIN_API_PORT="${ADMIN_API_PORT:-8100}"
 ADMIN_WEB_PORT="${ADMIN_WEB_PORT:-3100}"
 DOC_PROCESSING_PORT="${DOC_PROCESSING_PORT:-8200}"
 ASKAI_REDIS_URL="${ASKAI_REDIS_URL:-redis://127.0.0.1:6379/0}"
+MONGODB_URI="${MONGODB_URI:-mongodb://127.0.0.1:27017}"
+MONGODB_DB="${MONGODB_DB:-gragentic}"
+# Source mode runs the services on the host, so Dockerized Mongo/Redis/
+# Weaviate must publish their ports to 127.0.0.1. Export both the chat-api
+# names and the prefixed names used by admin-api and document-parser.
+export MONGODB_URI MONGODB_DB
+export ASKAI_ADMIN_MONGODB_URI="${ASKAI_ADMIN_MONGODB_URI:-$MONGODB_URI}"
+export ASKAI_ADMIN_MONGODB_DB="${ASKAI_ADMIN_MONGODB_DB:-$MONGODB_DB}"
+export MOVO_DOC_PROCESSING_MONGODB_URI="${MOVO_DOC_PROCESSING_MONGODB_URI:-$MONGODB_URI}"
+export MOVO_DOC_PROCESSING_MONGODB_DB="${MOVO_DOC_PROCESSING_MONGODB_DB:-$MONGODB_DB}"
 BACKEND_PYTHON_BIN=""
 DOC_PROCESSING_PYTHON_BIN=""
+
+# Source-mode development only needs a Python 3 interpreter to create venvs.
+# Prefer python3 because many Linux distributions no longer provide `python`.
+PYTHON_BIN="${PYTHON_BIN:-}"
+if [ -z "$PYTHON_BIN" ]; then
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHON_BIN="$(command -v python3)"
+    elif command -v python >/dev/null 2>&1; then
+        PYTHON_BIN="$(command -v python)"
+    else
+        echo "Python 3 is required to create the service virtual environments." >&2
+        exit 1
+    fi
+fi
 
 # One credential must be shared by admin-api and chat-api in local source mode.
 # shellcheck source=scripts/dev/internal_service_auth.sh
@@ -45,15 +69,39 @@ cleanup_ports() {
 }
 
 ensure_redis() {
-    if ! command -v redis-cli >/dev/null 2>&1; then
-        echo "Redis CLI not found. Install Redis first: brew install redis && brew services start redis"
-        exit 1
+    # redis-cli is optional. Redis commonly runs in Docker in source mode, so
+    # probe the Redis protocol over TCP when the CLI is not installed.
+    if command -v redis-cli >/dev/null 2>&1; then
+        if redis-cli -u "$ASKAI_REDIS_URL" ping >/dev/null 2>&1; then
+            return 0
+        fi
+    elif ASKAI_REDIS_URL="$ASKAI_REDIS_URL" "$PYTHON_BIN" - <<'PY' >/dev/null 2>&1
+import os
+import socket
+import sys
+from urllib.parse import urlparse
+
+url = urlparse(os.environ.get("ASKAI_REDIS_URL", "redis://127.0.0.1:6379/0"))
+host = url.hostname or "127.0.0.1"
+port = url.port or 6379
+
+try:
+    with socket.create_connection((host, port), timeout=3) as sock:
+        sock.sendall(b"*1\r\n$4\r\nPING\r\n")
+        response = sock.recv(64)
+except OSError:
+    sys.exit(1)
+
+if not response.startswith(b"+PONG"):
+    sys.exit(1)
+PY
+    then
+        return 0
     fi
-    if ! redis-cli -u "$ASKAI_REDIS_URL" ping >/dev/null 2>&1; then
-        echo "Redis is not available at $ASKAI_REDIS_URL"
-        echo "Start Redis first: brew services start redis"
-        exit 1
-    fi
+
+    echo "Redis is not available at $ASKAI_REDIS_URL" >&2
+    echo "Start Redis locally, or publish the Docker port (for example -p 6379:6379)." >&2
+    exit 1
 }
 
 cleanup() {
@@ -72,19 +120,32 @@ ensure_backend_venv() {
     if [ -d "venv" ]; then
         source venv/bin/activate
     else
-        python -m venv venv
+        "$PYTHON_BIN" -m venv venv
         source venv/bin/activate
     fi
     export PATH="$(pwd)/venv/bin:$PATH"
     export PYTHONUTF8=1
     export PYTHONIOENCODING=utf-8
-    export LANG="${LANG:-en_US.UTF-8}"
-    export LC_ALL="${LC_ALL:-en_US.UTF-8}"
+    # Do not force en_US.UTF-8: minimal Linux images often only ship C.UTF-8,
+    # and bash prints a warning for every missing locale. Python already runs
+    # in UTF-8 mode via PYTHONUTF8 above.
+    if [ -z "${LC_ALL:-}" ]; then
+        if locale -a 2>/dev/null | grep -qiE '^en_US\.utf-?8$'; then
+            export LC_ALL=en_US.UTF-8
+        elif locale -a 2>/dev/null | grep -qiE '^C\.utf-?8$'; then
+            export LC_ALL=C.UTF-8
+        fi
+    fi
+    export LANG="${LANG:-${LC_ALL:-C}}"
     export ASKAI_ADMIN_APP_ENV="${ASKAI_ADMIN_APP_ENV:-development}"
     export ASKAI_ADMIN_DOCUMENT_PROCESSING_BASE_URL="${ASKAI_ADMIN_DOCUMENT_PROCESSING_BASE_URL:-http://127.0.0.1:$DOC_PROCESSING_PORT}"
     export ASKAI_ADMIN_ADMIN_API_PUBLIC_BASE_URL="${ASKAI_ADMIN_ADMIN_API_PUBLIC_BASE_URL:-http://127.0.0.1:$ADMIN_API_PORT}"
     export ASKAI_DOC_PROCESSING_REDIS_URL="${ASKAI_DOC_PROCESSING_REDIS_URL:-$ASKAI_REDIS_URL}"
     BACKEND_PYTHON_BIN="$(pwd)/venv/bin/python"
+    if ! "$BACKEND_PYTHON_BIN" -c "import fastapi, uvicorn, motor, pymongo" >/dev/null 2>&1; then
+        echo "Installing chat-api dependencies..."
+        "$BACKEND_PYTHON_BIN" -m pip install -r requirements.txt
+    fi
     cd "$ROOT_DIR"
 }
 
